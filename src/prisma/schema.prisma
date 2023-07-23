@@ -6,19 +6,19 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("MYSQL_URL_DEV")
+  provider = "postgresql"
+  url      = env("DB_URL_DEV")
 }
 
 model User {
   id String @id @default(uuid())
 
-  name         String
-  photo        String?
-  googleId     String  @unique()
+  name         String  @unique
+  password     String
   refreshToken String?
 
-  games Game[]
+  createdGame Game[]
+  solvedGame  UserGame[]
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())
@@ -28,13 +28,26 @@ model User {
 model Game {
   id String @id @default(uuid())
 
-  json       Json
-  isFinished Boolean @default(false)
-  turn       Int     @default(0)
-  score      Int     @default(0)
+  name String
+  json Json
+
+  creatorId String
+  creator   User       @relation(fields: [creatorId], references: [id])
+  solver    UserGame[]
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+}
+
+model UserGame {
+  id String @id @default(uuid())
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  gameId String
+  game   Game   @relation(fields: [gameId], references: [id])
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())

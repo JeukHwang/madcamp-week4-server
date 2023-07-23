@@ -4,20 +4,20 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import type { CreateDto } from './dto/create.dto';
 
-export type UserProfile = Pick<User, 'id' | 'name' | 'photo'>;
+export type UserProfile = Pick<User, 'id' | 'name'>;
 export const toUserProfile = (user: User): UserProfile => ({
   id: user.id,
   name: user.name,
-  photo: user.photo,
 });
 
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(userInfo: CreateDto): Promise<User> {
+    const hashedPassword = await bcrypt.hash(userInfo.password, 10);
     try {
       const user: User = await this.prismaService.user.create({
-        data: { ...userInfo },
+        data: { ...userInfo, password: hashedPassword },
       });
       return user;
     } catch (e) {
@@ -32,28 +32,11 @@ export class UserService {
     return user;
   }
 
-  async findByGoogleId(googleId: string): Promise<User | null> {
+  async findByName(name: string): Promise<User | null> {
     const user: User | null = await this.prismaService.user.findUnique({
-      where: { googleId },
+      where: { name },
     });
     return user;
-  }
-
-  async getLeaderboard(): Promise<{ user: UserProfile; score: number }[]> {
-    const users = await this.prismaService.user.findMany({
-      include: { games: { select: { score: true } } },
-    });
-    const sortedUsers = users.sort((a, b) => {
-      const scoreA = Math.max(...a.games.map((game) => game.score));
-      const scoreB = Math.max(...b.games.map((game) => game.score));
-      return scoreA > scoreB ? -1 : 1;
-    });
-    return sortedUsers.map((user) => {
-      return {
-        user: toUserProfile(user),
-        score: Math.max(...user.games.map((game) => game.score)),
-      };
-    });
   }
 
   async getUserIfRefreshTokenMatches(

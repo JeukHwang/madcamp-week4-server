@@ -6,10 +6,7 @@ import type { Observable } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../decorator/public.decorator';
 
 @Injectable()
-export class JwtAccessGuard
-  extends AuthGuard('jwt-access')
-  implements CanActivate
-{
+export class LocalGuard extends AuthGuard('local') implements CanActivate {
   constructor(private reflector: Reflector) {
     super();
   }

@@ -14,9 +14,7 @@ export class PrismaService
   private logger = new Logger('Prisma');
 
   constructor() {
-    const dbUrl = isDev
-      ? process.env.MYSQL_URL_DEV
-      : process.env.MYSQL_URL_PROD;
+    const dbUrl = isDev ? process.env.DB_URL_DEV : process.env.DB_URL_PROD;
     super({
       datasources: { db: { url: dbUrl } },
     });

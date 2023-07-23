@@ -21,12 +21,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async googleLogin(user: User, res: Response): Promise<void> {
+  async auth(user: User, res: Response): Promise<void> {
     // get req.user by using CurrentUser decorator which is saved during validate function in googleStrategy
 
     await this.setCookie(res, user, 'access');
     await this.setCookie(res, user, 'refresh');
-    res.redirect(process.env.FRONT_CALLBACK_URL as string);
   }
 
   async setCookie(
