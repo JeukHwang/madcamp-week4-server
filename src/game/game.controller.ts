@@ -18,7 +18,7 @@ export class GameController {
     return toGameProfile(game);
   }
 
-  @Get('id/:id')
+  @Post('id/:id')
   async findById(@Param('id') id: string): Promise<GameProfile | null> {
     const game: Game | null = await this.gameService.findById(id);
     return game ? toGameProfile(game) : null;
