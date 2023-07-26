@@ -9,7 +9,7 @@ import { GameService, toGameProfile } from './game.service';
 @Controller('game')
 export class GameController {
   constructor(private readonly gameService: GameService) {}
-  @Get('create')
+  @Post('create')
   async createGame(
     @CurrentUser() user: User,
     @Body() body: CreateDto,
