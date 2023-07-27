@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post } from '@nestjs/common';
 import type { Game } from '@prisma/client';
 import { User } from '@prisma/client';
 import { CurrentUser } from 'src/user/decorator/current.decorator';
@@ -16,6 +16,12 @@ export class GameController {
   ): Promise<GameProfile> {
     const game: Game = await this.gameService.create(body, user);
     return toGameProfile(game);
+  }
+
+  @Post('browse')
+  async findAll(): Promise<GameProfile[]> {
+    const game: Game[] = await this.gameService.findAll();
+    return game.map(toGameProfile);
   }
 
   @Post('id/:id')

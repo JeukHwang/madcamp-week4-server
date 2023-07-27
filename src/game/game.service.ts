@@ -44,6 +44,11 @@ export class GameService {
     return game;
   }
 
+  async findAll(): Promise<Game[]> {
+    const games: Game[] = await this.prismaService.game.findMany();
+    return games;
+  }
+
   async solve(gameId: string, user: User): Promise<void> {
     const game: Game | null = await this.findById(gameId);
     if (!game) {
