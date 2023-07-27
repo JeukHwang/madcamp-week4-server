@@ -44,8 +44,16 @@ export class GameService {
     return game;
   }
 
-  async findAll(): Promise<Game[]> {
-    const games: Game[] = await this.prismaService.game.findMany();
+  async findAll(): Promise<(Game & { creator: { name: string } })[]> {
+    const games: (Game & { creator: { name: string } })[] =
+      await this.prismaService.game.findMany({
+        include: {
+          creator: { select: { name: true } },
+        },
+      });
+    games.forEach((game) => {
+      game.creatorId = game.creator.name;
+    });
     return games;
   }
 
