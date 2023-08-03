@@ -8,26 +8,24 @@ interface Tile {
   type: string;
 }
 
-interface Wall extends Tile {
+interface Wall Tile {
   type: 'wall';
-  visible: boolean;
+  isTransparent: boolean;
 }
 
 interface Switch extends Tile {
   type: 'switch';
-  active: boolean;
-  color: {
-    r: boolean;
-    g: boolean;
-    b: boolean;
-  };
+  red: boolean;
+  green: boolean;
+  blue: boolean;
+  door: Position[];
 }
 
 interface Door extends Tile {
   type: 'door';
-  orientation: 'vertical' | 'horizontal';
+  angle: '0' | '90' | '180' | '270';
   open: boolean;
-  switch: Switch[];
+  switch: Switch[]; // Position[]
 }
 
 interface Player extends Tile {
@@ -43,9 +41,8 @@ interface GameMap {
 interface Torch {
   position: Position;
   type: 'torch';
-  color: {
-    r: boolean;
-    g: boolean;
-    b: boolean;
-  };
+  red: boolean;
+  green: boolean;
+  blue: boolean;
+  on: boolean;
 }
